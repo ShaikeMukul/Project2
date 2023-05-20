@@ -35,8 +35,7 @@ class FeatureSelection:
                 best_set_accuracy = best_accuracy
                 best_feature_set = feature_set.union({best_feature})
 
-            print(
-                f'Feature set {feature_set.union({best_feature})} was best, accuracy is {round(best_accuracy * 100, 3)}%')
+            print(f'Feature set {feature_set.union({best_feature})} was best, accuracy is {round(best_accuracy * 100, 3)}%')
             print('\n')
             feature_set = feature_set.union({best_feature})
 
