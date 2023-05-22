@@ -9,6 +9,9 @@ class FeatureSelection:
         self.best_subset = []
         self.best_accuracy = 0.0
 
+    def random_accuracy(self):
+        return random.uniform(0,1)
+
     def leave_one_out_accuracy(self, feature_set, feature, labels=None, values=None):
         return random.uniform(0, 1)
     
@@ -19,6 +22,9 @@ class FeatureSelection:
         feature_set = set()
         best_feature_set = None
         best_set_accuracy = float('-inf')
+        
+        rand_acc = self.random_accuracy()
+        print(f"Using no features and “random” evaluation, I get an accuracy of {round(rand_acc * 100, 3)}%\n")
 
         while len(feature_set) < self.n_features:
             best_accuracy = float('-inf')
@@ -42,6 +48,9 @@ class FeatureSelection:
             print('\n')
             feature_set = feature_set.union({best_feature})
 
+        if(best_accuracy < rand_acc):
+            print("(Warning, Accuracy has decreased!)")    
+
         print(f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
 
 # this is pretty much like forward selection except for a few lines of difference
@@ -51,6 +60,9 @@ class FeatureSelection:
         best_feature_set = None
         best_set_accuracy = float('-inf')
 
+        rand_acc = self.random_accuracy()
+        print(f"Using no features and “random” evaluation, I get an accuracy of {round(rand_acc * 100, 3)}%")
+
         while len(feature_set) > 1:
             best_accuracy = float('-inf')
             best_feature = None
@@ -59,7 +71,7 @@ class FeatureSelection:
                     continue
 
                 new_accuracy = self.remove_one_accuracy(feature_set, feature)
-                print(f'Using feature(s) {feature_set.difference({feature})} accuracy is {round(new_accuracy * 100, 3)}%')
+                print(f'Using feature(s) {feature_set.difference({feature})} accuracy is {round(new_accuracy * 100, 3)}%\n')
 
                 if new_accuracy > best_accuracy:
                     best_accuracy = new_accuracy
@@ -74,6 +86,8 @@ class FeatureSelection:
             print('\n')
             feature_set = feature_set.difference({best_feature})
 
+            if(best_accuracy < rand_acc):
+                print("(Warning, Accuracy has decreased!)")
         print(
             f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
         
