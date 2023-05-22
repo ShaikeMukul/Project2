@@ -11,6 +11,9 @@ class FeatureSelection:
 
     def leave_one_out_accuracy(self, feature_set, feature, labels=None, values=None):
         return random.uniform(0, 1)
+    
+    def remove_one_accuracy(self, feature_set, feature, labels=None, values=None):
+        return random.uniform(0,1)
 
     def forward_selection(self):
         feature_set = set()
@@ -41,8 +44,36 @@ class FeatureSelection:
 
         print(f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
 
+# this is pretty much like forward selection except for a few lines of difference
     def backward_elimination(self):
-        print("Backward Elimination.")
+        feature_set = set() # TODO: once we get features from external source, this will change
+        best_feature_set = None
+        best_set_accuracy = float('-inf')
+
+        while len(feature_set) > 0:
+            best_accuracy = float('-inf')
+            best_feature = None
+            for feature in range(1, self.n_features + 1): # for every feature
+                if feature in feature_set: # if the feature is in the feature set...
+                    continue
+
+                new_accuracy = self.leave_one_out_accuracy(feature_set, feature) # the cost to remove one feature
+                print(f'Using feature(s) {feature_set.union({feature})} accuracy is {round(new_accuracy * 100, 3)}%')
+
+                if new_accuracy > best_accuracy:
+                    best_accuracy = new_accuracy
+                    best_feature = feature
+
+            if best_accuracy < best_set_accuracy: # change this to < in backward elim
+                best_feature_set = feature_set.remove({best_feature}) # if it's worse, remove the feature from the feature set
+            else:
+                best_set_accuracy = best_accuracy
+
+            print(f'Feature set {feature_set.union({best_feature})} was best, accuracy is {round(best_accuracy * 100, 3)}%')
+            print('\n')
+            feature_set = feature_set.union({best_feature})
+
+        print(f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
 
     def special_algorithm(self):
         print(f"{self.name}’s Special Algorithm.")
