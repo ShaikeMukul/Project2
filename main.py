@@ -1,19 +1,64 @@
 import random
-
+import numpy as np
 
 class FeatureSelection:
 
     def __init__(self):
         self.name = input("Enter your name: ")
-        self.n_features = int(input("Please enter total number of features: "))
+        self.n_features = 0
         self.best_subset = []
         self.best_accuracy = 0.0
+
+    def read_file(self):
+        labels = []
+        values = []
+        file_name = "small-test-dataset.txt"
+        with open(file_name) as f:
+            for line in f:
+                contents = line.split()
+                label = contents[0]
+                vals = np.array([float(num) for num in contents[1:]])
+                labels.append(label)
+                values.append(vals)
+
+        print(values[0])
+        return labels, values
 
     def random_accuracy(self):
         return random.uniform(0,1)
 
-    def leave_one_out_accuracy(self, feature_set, feature, labels=None, values=None):
-        return random.uniform(0, 1)
+    def leave_one_out_accuracy(self, features, labels, values, feature_to_add=None):
+        correct_num = 0
+        curr_vals = []
+        for row in values:
+            curr_row = []
+            for ind in range(len(row)):
+                if (ind + 1 in features) or (ind + 1) == feature_to_add:
+                    curr_row.append(row[ind])
+            curr_vals.append(np.array(curr_row))
+
+        for i in range(len(values)):
+            vector_i = curr_vals[i]
+            label_i = labels[i]
+
+            nearest_index_of_neighbour = None
+            nearest_val_of_neighbour = float('inf')
+
+            for j in range(len(values)):
+                if i == j:
+                    continue
+                vector_j = curr_vals[j]
+
+                distance = np.linalg.norm(vector_i - vector_j)
+                if distance < nearest_val_of_neighbour:
+                    nearest_index_of_neighbour = j
+                    nearest_val_of_neighbour = distance
+
+            predict_label = labels[nearest_index_of_neighbour]
+            if predict_label == label_i:
+                correct_num += 1
+
+        return correct_num / len(values)
     
     def remove_one_accuracy(self, feature_set, feature, labels=None, values=None):
         return random.uniform(0,1)
