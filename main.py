@@ -64,12 +64,15 @@ class FeatureSelection:
         return random.uniform(0,1)
 
     def forward_selection(self):
+        labels, values = self.read_file()
+        self.n_features = len(values[0])
         feature_set = set()
         best_feature_set = None
         best_set_accuracy = float('-inf')
-        
+
         rand_acc = self.random_accuracy()
         print(f"Using no features and “random” evaluation, I get an accuracy of {round(rand_acc * 100, 3)}%\n")
+        
 
         while len(feature_set) < self.n_features:
             best_accuracy = float('-inf')
@@ -78,7 +81,7 @@ class FeatureSelection:
                 if feature in feature_set:
                     continue
 
-                new_accuracy = self.leave_one_out_accuracy(feature_set, feature)
+                new_accuracy = self.leave_one_out_accuracy(feature_set, feature, labels, values)
                 print(f'Using feature(s) {feature_set.union({feature})} accuracy is {round(new_accuracy * 100, 3)}%')
 
                 if new_accuracy > best_accuracy:
