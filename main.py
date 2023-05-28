@@ -11,18 +11,20 @@ class FeatureSelection:
         self.best_accuracy = 0.0
 
     def read_file(self):
-        labels = []
-        values = []
-        file_name = "large-test-dataset.txt"
+        self.labels = []
+        self.values = []
+        file_name = "small-test-dataset.txt"
+        #file_name = "large-test-dataset.txt"
         with open(file_name) as f:
-            for line in f:
-                contents = line.split()
+            contents = f.readline().split()
+            while contents or (not self.values):
                 label = contents[0]
                 vals = np.array([float(num) for num in contents[1:]])
-                labels.append(label)
-                values.append(vals)
+                self.labels.append(label)
+                self.values.append(vals)
+                contents = f.readline().split()
         # print(values[0])
-        return labels, values
+        return self.labels, self.values
 
     def random_accuracy(self):
         return random.uniform(0, 1)
@@ -59,9 +61,6 @@ class FeatureSelection:
                 correct_num += 1
 
         return correct_num / len(values)
-
-    def remove_one_accuracy(self, feature_set, feature, labels=None, values=None):
-        return random.uniform(0, 1)
 
     def forward_selection(self):
         labels, values = self.read_file()
@@ -105,9 +104,11 @@ class FeatureSelection:
     # this is pretty much like forward selection except for a few lines of difference
     # just change all the unions to differences, since in this one we're taking away from the feature set
     def backward_elimination(self):
+        labels, values = self.read_file()
+        self.n_features = len(values[0])
         feature_set = set(range(1, self.n_features + 1))  # Start with all features
-        best_feature_set = None
-        best_set_accuracy = float('-inf')
+        best_feature_set = feature_set
+        best_set_accuracy = self.leave_one_out_accuracy(labels, values, feature_set)
 
         rand_acc = self.random_accuracy()
         print(f"Using no features and “random” evaluation, I get an accuracy of {round(rand_acc * 100, 3)}%")
@@ -118,8 +119,8 @@ class FeatureSelection:
             for feature in range(1, self.n_features + 1):
                 if feature not in feature_set:
                     continue
-
-                new_accuracy = self.remove_one_accuracy(feature_set, feature)
+                updated_feature_set = feature_set.difference({best_feature})
+                new_accuracy = self.leave_one_out_accuracy(labels, values, updated_feature_set)
                 print(
                     f'Using feature(s) {feature_set.difference({feature})} accuracy is {round(new_accuracy * 100, 3)}%\n')
 
