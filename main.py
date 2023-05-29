@@ -1,6 +1,6 @@
 import random
 import numpy as np
-
+import time
 
 class FeatureSelection:
 
@@ -79,8 +79,12 @@ class FeatureSelection:
                 if feature in feature_set:
                     continue
 
+                start_time = time.time()
                 new_accuracy = self.leave_one_out_accuracy(labels, values, feature_set, feature)
                 print(f'Using feature(s) {feature_set.union({feature})} accuracy is {round(new_accuracy * 100, 3)}%')
+
+                elapsed_time = round(time.time() - start_time, 5)
+                print(f'Time taken: {elapsed_time} seconds\n')
 
                 if new_accuracy > best_accuracy:
                     best_accuracy = new_accuracy
@@ -120,8 +124,14 @@ class FeatureSelection:
                 if feature not in feature_set:
                     continue
                 updated_feature_set = feature_set.difference({feature})
+                
+
+                start_time = time.time()
                 new_accuracy = self.leave_one_out_accuracy(labels, values, updated_feature_set)
                 print(f'Using feature(s) {updated_feature_set}, accuracy is {round(new_accuracy * 100, 3)}%\n')
+                
+                elapsed_time = round(time.time() - start_time, 5)
+                print(f'Time taken: {elapsed_time} seconds\n')
 
                 if new_accuracy > best_accuracy:
                     best_accuracy = new_accuracy
