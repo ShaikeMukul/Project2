@@ -13,8 +13,9 @@ class FeatureSelection:
     def read_file(self):
         self.labels = []
         self.values = []
-        file_name = "small-test-dataset.txt"
-        #file_name = "large-test-dataset.txt"
+        file_name = input("Dataset name: ")
+        # "small-test-dataset.txt"
+        # "large-test-dataset.txt"
         with open(file_name) as f:
             contents = f.readline().split()
             while contents or (not self.values):
