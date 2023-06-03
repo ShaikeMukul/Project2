@@ -1,10 +1,13 @@
 import random
 import numpy as np
-import time
+# import time
+
 
 class FeatureSelection:
 
     def __init__(self):
+        self.values = None
+        self.labels = None
         self.name = input("Enter your name: ")
         self.n_features = 0
         self.best_subset = []
@@ -70,8 +73,12 @@ class FeatureSelection:
         best_feature_set = None
         best_set_accuracy = float('-inf')
 
+        print(
+            f'This dataset has {self.n_features} features (not including the class attribute), with {len(self.values)} instances.\n')
+
         rand_acc = self.random_accuracy()
-        print(f"Using no features and “random” evaluation, I get an accuracy of {round(rand_acc * 100, 3)}%\n")
+        print(f"Running nearest neighbor with no features (default rate), using “leaving-one-out” evaluation, "
+              f"I get an accuracy of {round(rand_acc * 100, 3)}% \n")
 
         while len(feature_set) < self.n_features:
             best_accuracy = float('-inf')
@@ -80,13 +87,13 @@ class FeatureSelection:
                 if feature in feature_set:
                     continue
 
-                start_time = time.time()
+                # start_time = time.time()
                 new_accuracy = self.leave_one_out_accuracy(labels, values, feature_set, feature)
                 print(f'Using feature(s) {feature_set.union({feature})} accuracy is {round(new_accuracy * 100, 3)}%')
-
+                """
                 elapsed_time = round(time.time() - start_time, 5)
                 print(f'Time taken: {elapsed_time} seconds\n')
-
+                """
                 if new_accuracy > best_accuracy:
                     best_accuracy = new_accuracy
                     best_feature = feature
@@ -115,8 +122,12 @@ class FeatureSelection:
         best_feature_set = feature_set
         best_set_accuracy = self.leave_one_out_accuracy(labels, values, feature_set)
 
+        print(
+            f'This dataset has {self.n_features} features (not including the class attribute), with {len(self.values)} instances.\n')
+
         rand_acc = self.random_accuracy()
-        print(f"Using no features and 'random' evaluation, I get an accuracy of {round(rand_acc * 100, 3)}%")
+        print(f"Running nearest neighbor with no features (default rate), using “leaving-one-out” evaluation, "
+              f"I get an accuracy of {round(rand_acc * 100, 3)}% \n")
 
         while len(feature_set) > 1:
             best_accuracy = float('-inf')
@@ -125,15 +136,14 @@ class FeatureSelection:
                 if feature not in feature_set:
                     continue
                 updated_feature_set = feature_set.difference({feature})
-                
 
-                start_time = time.time()
+                # start_time = time.time()
                 new_accuracy = self.leave_one_out_accuracy(labels, values, updated_feature_set)
                 print(f'Using feature(s) {updated_feature_set}, accuracy is {round(new_accuracy * 100, 3)}%\n')
-                
+                """
                 elapsed_time = round(time.time() - start_time, 5)
                 print(f'Time taken: {elapsed_time} seconds\n')
-
+                """
                 if new_accuracy > best_accuracy:
                     best_accuracy = new_accuracy
                     best_feature = feature
@@ -142,16 +152,16 @@ class FeatureSelection:
                 best_set_accuracy = best_accuracy
                 best_feature_set = feature_set.difference({best_feature})
 
-            print(f'Feature set {feature_set.difference({best_feature})} was best, accuracy is {round(best_accuracy * 100, 3)}%')
+            print(
+                f'Feature set {feature_set.difference({best_feature})} was best, accuracy is {round(best_accuracy * 100, 3)}%')
             print('\n')
             feature_set = feature_set.difference({best_feature})
 
             if best_set_accuracy < rand_acc:
                 print("(Warning, Accuracy has decreased!)")
-        
-        print(f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
 
-
+        print(
+            f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
 
     def special_algorithm(self):
         print(f"{self.name}’s Special Algorithm.")
