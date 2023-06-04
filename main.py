@@ -42,6 +42,9 @@ class FeatureSelection:
                 if (ind + 1 in features) or (ind + 1) == feature_to_add:
                     curr_row.append(row[ind])
             curr_vals.append(np.array(curr_row))
+            
+        standard_deviation = np.linalg.norm(np.std(curr_vals, axis=0))
+        ##print(f'Standard deviation is: " {standard_deviation}')
 
         for i in range(len(values)):
             vector_i = curr_vals[i]
@@ -55,7 +58,7 @@ class FeatureSelection:
                     continue
                 vector_j = curr_vals[j]
 
-                distance = np.linalg.norm(vector_i - vector_j)
+                distance = np.linalg.norm(vector_i - vector_j) / standard_deviation
                 if distance < nearest_val_of_neighbour:
                     nearest_index_of_neighbour = j
                     nearest_val_of_neighbour = distance
@@ -139,7 +142,7 @@ class FeatureSelection:
 
                 # start_time = time.time()
                 new_accuracy = self.leave_one_out_accuracy(labels, values, updated_feature_set)
-                print(f'Using feature(s) {updated_feature_set}, accuracy is {round(new_accuracy * 100, 3)}%\n')
+                print(f'Using feature(s) {updated_feature_set}, accuracy is {round(new_accuracy * 100, 3)}%')
                 """
                 elapsed_time = round(time.time() - start_time, 5)
                 print(f'Time taken: {elapsed_time} seconds\n')
