@@ -33,15 +33,7 @@ class FeatureSelection:
 
     def random_accuracy(self):
         return random.uniform(0, 1)
-    
-    # def plot_accuracy(feature_sets, accuracies):
-    #     plt.plot(feature_sets, accuracies, marker='o')
-    #     plt.xlabel('Feature Set')
-    #     plt.ylabel('Accuracy')
-    #     plt.title('Accuracy for different feature sets')
-    #     plt.xticks(rotation=90)
-    #     plt.grid(True)
-    #     plt.show()
+
 
     def leave_one_out_accuracy(self, labels, values, features, feature_to_add=None):
         correct_num = 0
@@ -81,12 +73,24 @@ class FeatureSelection:
 
     def forward_selection(self):
         labels, values = self.read_file()
+        #testing scatter plots with two specific features
+        feature1_index = 0
+        feature2_index = 2
+        x = [instance[feature1_index] for instance in values]  
+        y = [instance[feature2_index] for instance in values]  
+        plt.scatter(x, y)  
+        plt.xlabel(f'Feature {feature1_index + 1}')  
+        plt.ylabel(f'Feature {feature2_index + 1}')  
+        plt.title('Scatter Plot')  
+        plt.show()  
+
+
+
         self.n_features = len(values[0])
         feature_set = set()
         best_feature_set = None
         best_set_accuracy = float('-inf')
-        # accuracies = []
-        # feature_sets = []
+
 
         print(
             f'This dataset has {self.n_features} features (not including the class attribute), with {len(self.values)} instances.\n')
@@ -121,9 +125,6 @@ class FeatureSelection:
                 f'Feature set {feature_set.union({best_feature})} was best, accuracy is {round(best_accuracy * 100, 3)}%')
             print('\n')
             feature_set = feature_set.union({best_feature})
-        
-            # accuracies.append(best_accuracy)
-            # feature_sets.append(len(feature_set))
 
         if best_accuracy < rand_acc:
             print("(Warning, Accuracy has decreased!)")
@@ -131,7 +132,6 @@ class FeatureSelection:
         print(
             f'Finished search!! The best feature subset is {best_feature_set}, which has an accuracy of {round(best_set_accuracy * 100, 3)}%')
         
-        # FeatureSelection.plot_accuracy(feature_sets, accuracies)
 
     # this is pretty much like forward selection except for a few lines of difference
     # just change all the unions to differences, since in this one we're taking away from the feature set
