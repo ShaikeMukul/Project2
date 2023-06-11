@@ -148,11 +148,17 @@ class FeatureSelection:
     def backward_elimination(self):
         labels, values = self.read_file()
         #testing scatter plots with two specific features
-        feature1_index = 0
-        feature2_index = 2
+        class_labels = [float(label) for label in labels]
+        colors = ['red' if label == 1.0 else 'blue' for label in class_labels]  # Assign colors based on class labels
+
+        feature1_index = 2  
+        feature2_index = 4 
+
         x = [instance[feature1_index] for instance in values]  
         y = [instance[feature2_index] for instance in values]  
-        plt.scatter(x, y)  
+
+
+        plt.scatter(x, y, c=colors) 
         plt.xlabel(f'Feature {feature1_index + 1}')  
         plt.ylabel(f'Feature {feature2_index + 1}')  
         plt.title('Scatter Plot')  
