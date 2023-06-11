@@ -73,12 +73,22 @@ class FeatureSelection:
 
     def forward_selection(self):
         labels, values = self.read_file()
-        #testing scatter plots with two specific features
-        feature1_index = 0
-        feature2_index = 2
+        self.n_features = len(values[0])
+        feature_set = set()
+        best_feature_set = None
+        best_set_accuracy = float('-inf')
+
+        class_labels = [float(label) for label in labels]
+        colors = ['red' if label == 1.0 else 'blue' for label in class_labels]  # Assign colors based on class labels
+
+        feature1_index = 2  
+        feature2_index = 4 
+
         x = [instance[feature1_index] for instance in values]  
         y = [instance[feature2_index] for instance in values]  
-        plt.scatter(x, y)  
+
+
+        plt.scatter(x, y, c=colors) 
         plt.xlabel(f'Feature {feature1_index + 1}')  
         plt.ylabel(f'Feature {feature2_index + 1}')  
         plt.title('Scatter Plot')  
@@ -137,6 +147,17 @@ class FeatureSelection:
     # just change all the unions to differences, since in this one we're taking away from the feature set
     def backward_elimination(self):
         labels, values = self.read_file()
+        #testing scatter plots with two specific features
+        feature1_index = 0
+        feature2_index = 2
+        x = [instance[feature1_index] for instance in values]  
+        y = [instance[feature2_index] for instance in values]  
+        plt.scatter(x, y)  
+        plt.xlabel(f'Feature {feature1_index + 1}')  
+        plt.ylabel(f'Feature {feature2_index + 1}')  
+        plt.title('Scatter Plot')  
+        plt.show()  
+
         self.n_features = len(values[0])
         feature_set = set(range(1, self.n_features + 1))  # Start with all features
         best_feature_set = feature_set
